@@ -1,135 +1,65 @@
-import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore_platform_interface/cloud_firestore_platform_interface.dart' as firestore_interface;
+import 'package:grpc_cloud_firestore/src/grpc_field_value_factory_platform.dart';
 
 class GrpcFirebaseFirestore implements FirebaseFirestore {
+  GrpcFirebaseFirestore() {
+    firestore_interface.FieldValueFactoryPlatform.instance = GrpcFieldValueFactoryPlatform();
+  }
+
+  @override
+  CollectionReference<Map<String, dynamic>> collection(String path) {
+    final segments = path.split('/');
+    assert(segments.length % 2 == 1, 'Invalid document reference. Collection references must have an odd number of segments');
+    throw UnimplementedError();
+    // return MockCollectionReference<Map<String, dynamic>>(
+    //     this, path, getSubpath(_root, path), _docsData, getSubpath(_snapshotStreamControllerRoot, path));
+  }
+
+  @override
+  CollectionReference<Map<String, dynamic>> collectionGroup(String collectionId) {
+    assert(!collectionId.contains('/'), 'Collection ID should not contain "/"');
+    throw UnimplementedError();
+  }
+
+  @override
+  DocumentReference<Map<String, dynamic>> doc(String path) {
+    // Remove the starting '/' if found, like the actual Firestore.
+    if (path.startsWith('/')) {
+      path = path.substring(1);
+    }
+    final segments = path.split('/');
+    // The actual behavior of Firestore for an invalid number of segments
+    // differs by platforms. This library imitates it with assert.
+    // https://github.com/atn832/fake_cloud_firestore/issues/30
+    assert(segments.length % 2 == 0, 'Invalid document reference. Document references must have an even number of segments');
+    final documentId = segments.last;
+    throw UnimplementedError();
+  }
+
   @override
   WriteBatch batch() {
-    FirebaseFirestore.instance.app = Firebase.app();
+    throw UnimplementedError();
+  }
 
-    // TODO: implement batch
+  @override
+  Future<T> runTransaction<T>(TransactionHandler<T> transactionHandler,
+      {Duration timeout = const Duration(seconds: 30), int maxAttempts = 5}) async {
     throw UnimplementedError();
   }
 
   @override
   Future<void> clearPersistence() {
-    // TODO: implement clearPersistence
     throw UnimplementedError();
   }
 
   @override
-  CollectionReference<Map<String, dynamic>> collection(String collectionPath) {
-    // TODO: implement collection
-    throw UnimplementedError();
-  }
+  bool operator ==(Object? other) =>
+      other is GrpcFirebaseFirestore ? other.app == app && other.databaseURL == other.databaseURL : false;
 
   @override
-  Query<Map<String, dynamic>> collectionGroup(String collectionPath) {
-    // TODO: implement collectionGroup
-    throw UnimplementedError();
-  }
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 
   @override
-  Future<void> disableNetwork() {
-    // TODO: implement disableNetwork
-    throw UnimplementedError();
-  }
-
-  @override
-  DocumentReference<Map<String, dynamic>> doc(String documentPath) {
-    // TODO: implement doc
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> enableNetwork() {
-    // TODO: implement enableNetwork
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> enablePersistence([PersistenceSettings? persistenceSettings]) {
-    // TODO: implement enablePersistence
-    throw UnimplementedError();
-  }
-
-  @override
-  LoadBundleTask loadBundle(Uint8List bundle) {
-    // TODO: implement loadBundle
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<QuerySnapshot<Map<String, dynamic>>> namedQueryGet(String name,
-      {GetOptions options = const GetOptions()}) {
-    // TODO: implement namedQueryGet
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<QuerySnapshot<T>> namedQueryWithConverterGet<T>(String name,
-      {GetOptions options = const GetOptions(),
-      required FromFirestore<T> fromFirestore,
-      required ToFirestore<T> toFirestore}) {
-    // TODO: implement namedQueryWithConverterGet
-    throw UnimplementedError();
-  }
-
-  @override
-  // TODO: implement pluginConstants
-  Map get pluginConstants => throw UnimplementedError();
-
-  @override
-  Future<T> runTransaction<T>(TransactionHandler<T> transactionHandler,
-      {Duration timeout = const Duration(seconds: 30), int maxAttempts = 5}) {
-    // TODO: implement runTransaction
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> setIndexConfiguration(
-      {required List<Index> indexes, List<FieldOverrides>? fieldOverrides}) {
-    // TODO: implement setIndexConfiguration
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> setIndexConfigurationFromJSON(String json) {
-    // TODO: implement setIndexConfigurationFromJSON
-    throw UnimplementedError();
-  }
-
-  @override
-  Stream<void> snapshotsInSync() {
-    // TODO: implement snapshotsInSync
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> terminate() {
-    // TODO: implement terminate
-    throw UnimplementedError();
-  }
-
-  @override
-  void useFirestoreEmulator(String host, int port,
-      {bool sslEnabled = false, bool automaticHostMapping = true}) {
-    // TODO: implement useFirestoreEmulator
-  }
-
-  @override
-  Future<void> waitForPendingWrites() {
-    // TODO: implement waitForPendingWrites
-    throw UnimplementedError();
-  }
-
-  @override
-  FirebaseApp app;
-
-  @override
-  String databaseURL;
-
-  @override
-  Settings settings;
+  int get hashCode => Object.hash(app.name, app.options);
 }
