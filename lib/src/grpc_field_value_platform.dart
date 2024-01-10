@@ -1,4 +1,3 @@
-import 'package:clock/clock.dart';
 import 'package:cloud_firestore_platform_interface/cloud_firestore_platform_interface.dart';
 import 'package:grpc_cloud_firestore/src/utils.dart';
 

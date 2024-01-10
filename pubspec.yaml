@@ -8,12 +8,15 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  clock: ^1.1.1
   cloud_firestore: ^4.14.0
   cloud_firestore_platform_interface: ^6.1.0
+  collection: ^1.18.0
   firebase_core: ^2.24.2
+  fixnum: ^1.1.0
   flutter:
     sdk: flutter
+  grpc: ^3.2.4
+  protobuf: ^3.1.0
 
 dev_dependencies:
   flutter_test:
