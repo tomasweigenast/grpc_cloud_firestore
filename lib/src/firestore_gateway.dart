@@ -1,5 +1,7 @@
 import 'package:grpc/grpc.dart';
+import 'package:grpc_cloud_firestore/src/generated/google/firestore/v1/document.pb.dart';
 import 'package:grpc_cloud_firestore/src/generated/google/firestore/v1/firestore.pbgrpc.dart';
+import 'package:grpc_cloud_firestore/src/utils.dart';
 
 /// The [FirestoreGateway] is a bridge between FirebaseFirestore API and gRPC API
 final class FirestoreGateway {
@@ -18,5 +20,10 @@ final class FirestoreGateway {
 
   void close() {
     _clientChannel.shutdown();
+  }
+
+  Future<void> createDocument(Map<String, dynamic> data) async {
+    final document = Document(
+        fields: data.map((key, value) => MapEntry(key, toFirestoreValue(value))), name: "");
   }
 }
