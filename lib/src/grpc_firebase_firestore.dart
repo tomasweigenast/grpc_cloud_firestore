@@ -1,8 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore_platform_interface/cloud_firestore_platform_interface.dart' as firestore_interface;
+import 'package:grpc_cloud_firestore/src/firestore_gateway.dart';
 import 'package:grpc_cloud_firestore/src/grpc_field_value_factory_platform.dart';
+import 'package:grpc_cloud_firestore/src/grpc_write_batch.dart';
 
 class GrpcFirebaseFirestore implements FirebaseFirestore {
+  final FirestoreGateway _gateway = FirestoreGateway();
+
   GrpcFirebaseFirestore() {
     firestore_interface.FieldValueFactoryPlatform.instance = GrpcFieldValueFactoryPlatform();
   }
@@ -38,9 +42,7 @@ class GrpcFirebaseFirestore implements FirebaseFirestore {
   }
 
   @override
-  WriteBatch batch() {
-    throw UnimplementedError();
-  }
+  WriteBatch batch() => GrpcWriteBatch(_gateway);
 
   @override
   Future<T> runTransaction<T>(TransactionHandler<T> transactionHandler,
